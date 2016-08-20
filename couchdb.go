@@ -192,6 +192,30 @@ func (db *DB) Delete(id, rev string) (newrev string, err error) {
 	return responseRev(db.closedRequest("DELETE", path, nil))
 }
 
+// Search a document by search indexes
+func (db *DB) Search(ddoc, index string, searchParam Options) error {
+	searchParam["include_docs"] = "true"
+	if !strings.HasPrefix(ddoc, "_design/") {
+		return errors.New("couchdb.Search: design doc name must start with _design/")
+	}
+
+	searchQueryParam, err := encopts(searchParam, nil)
+	if err != nil {
+		return err
+	}
+
+	path := path(db.name, ddoc, "_search", index, searchQueryParam)
+
+	if len(path) <= 0 {
+		return nil
+	}
+	resp, err := db.request("GET", path, nil)
+	if err != nil {
+		return err
+	}
+	return readBody(resp, &Search{})
+}
+
 // Security represents database security objects.
 type Security struct {
 	Admins  Members `json:"admins"`
