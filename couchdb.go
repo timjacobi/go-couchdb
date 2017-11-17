@@ -229,7 +229,7 @@ func (db *DB) PutSecurity(secobj *Security) error {
 	return err
 }
 
-var viewJsonKeys = []string{"startkey", "start_key", "key", "endkey", "end_key"}
+var viewJsonKeys = []string{"startkey", "start_key", "key", "keys", "endkey", "end_key"}
 
 // View invokes a view.
 // The ddoc parameter must be the full name of the design document
